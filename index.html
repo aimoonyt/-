@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ты тоже :)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --grid: rgba(236, 140, 170, 0.14);
+    --grid-strong: rgba(236, 140, 170, 0.24);
+    --pink-1: #ffd6e4;
+    --pink-2: #ffb3cb;
+    --pink-3: #ff8fb1;
+    --pink-deep: #f06a96;
+    --text: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(circle at 50% 45%, rgba(255, 214, 228, 0.55), transparent 55%),
+      linear-gradient(var(--grid-strong) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 100% 100%, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+    background-position: center, -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+    font-family: "Comfortaa", system-ui, sans-serif;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ---------- ambient floating hearts ---------- */
+  .ambient { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .ambient span {
+    position: absolute;
+    bottom: -40px;
+    color: var(--pink-2);
+    opacity: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    10%  { opacity: .55; }
+    50%  { transform: translateY(-55vh) translateX(var(--drift)) rotate(20deg); }
+    90%  { opacity: .4; }
+    100% { transform: translateY(-115vh) translateX(0) rotate(-10deg); opacity: 0; }
+  }
+
+  /* ---------- stage ---------- */
+  .stage {
+    position: relative;
+    width: min(78vw, 420px);
+    aspect-ratio: 100 / 90;
+    display: grid;
+    place-items: center;
+  }
+
+  .heart-wrap {
+    position: absolute;
+    inset: 0;
+    transform: scale(0);
+  }
+
+  .heart-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+  .heart-outline {
+    fill: none;
+    stroke: var(--pink-3);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .heart-fill { opacity: 0; transform-origin: 50% 50%; transform-box: fill-box; }
+
+  .heart-shine { opacity: 0; }
+
+  .glow {
+    position: absolute;
+    inset: -12%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 143, 177, 0.45), transparent 62%);
+    filter: blur(18px);
+    opacity: 0;
+    z-index: -1;
+  }
+
+  .ring {
+    position: absolute;
+    left: 50%; top: 48%;
+    width: 40%; aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--pink-2);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ---------- text ---------- */
+  .label {
+    position: absolute;
+    left: 0; right: 0;
+    top: 40%;
+    transform: translateY(-50%);
+    text-align: center;
+    color: var(--text);
+    font-weight: 700;
+    font-size: clamp(26px, 8.4vw, 46px);
+    letter-spacing: 0.02em;
+    white-space: pre;
+    text-shadow: 0 2px 14px rgba(240, 106, 150, 0.55);
+    pointer-events: none;
+  }
+  .label .ch {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(18px) scale(.6);
+    filter: blur(8px);
+  }
+
+  /* ---------- particles ---------- */
+  .particles { position: absolute; left: 50%; top: 46%; width: 0; height: 0; pointer-events: none; }
+  .p {
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--pink-3);
+    line-height: 1;
+    transform: translate(-50%, -50%);
+    will-change: transform, opacity;
+  }
+
+  /* ---------- button ---------- */
+  .again {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(36px, 11vh, 96px);
+    transform: translate(-50%, 20px);
+    opacity: 0;
+    pointer-events: none;
+    border: none;
+    cursor: pointer;
+    font: 700 18px/1 "Comfortaa", system-ui, sans-serif;
+    color: #fff;
+    padding: 16px 38px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--pink-2), var(--pink-3));
+    box-shadow:
+      0 10px 28px rgba(255, 143, 177, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transition: opacity .6s ease, transform .6s cubic-bezier(.2, 1.4, .4, 1), box-shadow .25s ease, filter .25s ease;
+  }
+  .again.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .again.show:hover { transform: translate(-50%, -3px); box-shadow: 0 16px 34px rgba(255, 143, 177, 0.55), inset 0 1px 0 rgba(255,255,255,.6); }
+  .again.show:active { transform: translate(-50%, 1px) scale(.97); filter: brightness(.97); }
+  .again::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
+    background-size: 250% 100%;
+    background-position: 150% 0;
+    animation: shimmer 3.2s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes shimmer { 0%, 55% { background-position: 150% 0; } 100% { background-position: -100% 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="ambient" id="ambient"></div>
+
+  <main class="stage" id="stage">
+    <div class="glow" id="glow"></div>
+    <div class="ring" id="ring1"></div>
+    <div class="ring" id="ring2"></div>
+
+    <div class="heart-wrap" id="heartWrap">
+      <svg viewBox="0 0 100 90" aria-hidden="true">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffd6e4"/>
+            <stop offset="50%" stop-color="#ffb3cb"/>
+            <stop offset="100%" stop-color="#ff8fb1"/>
+          </linearGradient>
+          <radialGradient id="shine" cx="30%" cy="25%" r="40%">
+            <stop offset="0%" stop-color="#fff" stop-opacity=".85"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path class="heart-fill" id="heartFill" fill="url(#g)"
+          d="M50 86 C 22 66, 3 48, 3 28 C 3 13, 14 3, 28 3 C 38 3, 46 9, 50 17 C 54 9, 62 3, 72 3 C 86 3, 97 13, 97 28 C 97 48, 78 66, 50 86 Z"/>
+        <path class="heart-shine" id="heartShine" fill="url(#shine)"
+          d="M50 86 C 22 66, 3 48, 3 28 C 3 13, 14 3, 28 3 C 38 3, 46 9, 50 17 C 54 9, 62 3, 72 3 C 86 3, 97 13, 97 28 C 97 48, 78 66, 50 86 Z"/>
+        <path class="heart-outline" id="heartOutline" pathLength="1"
+          d="M50 86 C 22 66, 3 48, 3 28 C 3 13, 14 3, 28 3 C 38 3, 46 9, 50 17 C 54 9, 62 3, 72 3 C 86 3, 97 13, 97 28 C 97 48, 78 66, 50 86 Z"/>
+      </svg>
+    </div>
+
+    <div class="label" id="label" aria-label="ты тоже :)"></div>
+    <div class="particles" id="particles"></div>
+  </main>
+
+  <button class="again" id="again" type="button">ещё раз</button>
+
+<script>
+(() => {
+  const TEXT = "ты тоже :)";
+  const $ = (id) => document.getElementById(id);
+  const wrap = $("heartWrap"), outline = $("heartOutline"), fill = $("heartFill"),
+        shine = $("heartShine"), glow = $("glow"), label = $("label"),
+        particles = $("particles"), btn = $("again"), r1 = $("ring1"), r2 = $("ring2");
+
+  const running = [];
+  const anim = (el, frames, opts) => {
+    const a = el.animate(frames, { fill: "forwards", easing: "ease", ...opts });
+    running.push(a);
+    return a;
+  };
+  const springy = "cubic-bezier(.34, 1.56, .64, 1)";
+
+  // ambient background hearts
+  const ambient = $("ambient");
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement("span");
+    s.textContent = "♥";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.fontSize = 10 + Math.random() * 18 + "px";
+    s.style.setProperty("--drift", (Math.random() * 80 - 40) + "px");
+    s.style.animationDuration = 9 + Math.random() * 9 + "s";
+    s.style.animationDelay = -Math.random() * 18 + "s";
+    ambient.appendChild(s);
+  }
+
+  function burst() {
+    particles.innerHTML = "";
+    const glyphs = ["♥", "♥", "♥", "✦", "•"];
+    const colors = ["#ffb3cb", "#ff8fb1", "#ffd6e4", "#f06a96"];
+    const n = 28;
+    const size = particles.parentElement.offsetWidth;
+    for (let i = 0; i < n; i++) {
+      const p = document.createElement("span");
+      p.className = "p";
+      p.textContent = glyphs[i % glyphs.length];
+      p.style.color = colors[i % colors.length];
+      p.style.fontSize = 10 + Math.random() * 16 + "px";
+      particles.appendChild(p);
+      const angle = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+      const dist = size * (0.45 + Math.random() * 0.4);
+      const x = Math.cos(angle) * dist, y = Math.sin(angle) * dist;
+      const rot = Math.random() * 360 - 180;
+      anim(p, [
+        { transform: "translate(-50%,-50%) scale(0) rotate(0deg)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${x * .7}px), calc(-50% + ${y * .7}px)) scale(1.1) rotate(${rot / 2}deg)`, opacity: 1, offset: .55 },
+        { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y + 40}px)) scale(.4) rotate(${rot}deg)`, opacity: 0 }
+      ], { duration: 1300 + Math.random() * 700, easing: "cubic-bezier(.15,.7,.3,1)" });
+    }
+  }
+
+  function ringPulse(el, delay) {
+    anim(el, [
+      { transform: "translate(-50%,-50%) scale(.2)", opacity: .9, borderWidth: "4px" },
+      { transform: "translate(-50%,-50%) scale(3.4)", opacity: 0, borderWidth: "1px" }
+    ], { duration: 1200, delay, easing: "cubic-bezier(.1,.6,.3,1)" });
+  }
+
+  function play() {
+    running.forEach(a => a.cancel());
+    running.length = 0;
+    btn.classList.remove("show");
+    particles.innerHTML = "";
+
+    label.innerHTML = "";
+    const chars = [...TEXT].map(c => {
+      const s = document.createElement("span");
+      s.className = "ch";
+      s.textContent = c === " " ? " " : c;
+      label.appendChild(s);
+      return s;
+    });
+
+    // 1. appear & wobble in
+    anim(wrap, [
+      { transform: "scale(0) rotate(-20deg)" },
+      { transform: "scale(1.08) rotate(6deg)", offset: .6 },
+      { transform: "scale(.96) rotate(-2deg)", offset: .8 },
+      { transform: "scale(1) rotate(0deg)" }
+    ], { duration: 1100, easing: "ease-out" });
+
+    // 2. draw outline
+    anim(outline, [
+      { strokeDashoffset: 1 },
+      { strokeDashoffset: 0 }
+    ], { duration: 1300, delay: 150, easing: "cubic-bezier(.65,0,.35,1)" });
+
+    // 3. fill blooms from center
+    anim(fill, [
+      { opacity: 0, transform: "scale(.2)" },
+      { opacity: 1, transform: "scale(1.06)", offset: .7 },
+      { opacity: 1, transform: "scale(1)" }
+    ], { duration: 800, delay: 1200, easing: springy });
+
+    anim(shine, [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 1600 });
+    anim(outline, [{ stroke: "#ff8fb1" }, { stroke: "#ffffff", strokeWidth: 1.2 }], { duration: 600, delay: 1700 });
+
+    // 4. big thump + burst + rings
+    const thumpAt = 1950;
+    anim(wrap, [
+      { transform: "scale(1)" },
+      { transform: "scale(1.18)", offset: .3 },
+      { transform: "scale(.94)", offset: .6 },
+      { transform: "scale(1)" }
+    ], { duration: 650, delay: thumpAt, easing: "ease-out", composite: "replace" });
+    anim(glow, [{ opacity: 0, transform: "scale(.5)" }, { opacity: 1, transform: "scale(1.1)" }, { opacity: .7, transform: "scale(1)" }],
+      { duration: 900, delay: thumpAt });
+    setTimeoutTracked(burst, thumpAt + 80);
+    ringPulse(r1, thumpAt + 60);
+    ringPulse(r2, thumpAt + 300);
+
+    // 5. letters one by one
+    const textAt = thumpAt + 450;
+    chars.forEach((c, i) => {
+      anim(c, [
+        { opacity: 0, transform: "translateY(18px) scale(.6) rotate(-8deg)", filter: "blur(8px)" },
+        { opacity: 1, transform: "translateY(-6px) scale(1.15) rotate(3deg)", filter: "blur(0)", offset: .65 },
+        { opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)", filter: "blur(0)" }
+      ], { duration: 620, delay: textAt + i * 90, easing: "ease-out" });
+    });
+
+    // 6. endless heartbeat
+    const beatAt = textAt + chars.length * 90 + 500;
+    setTimeoutTracked(() => {
+      const beat = wrap.animate([
+        { transform: "scale(1)" },
+        { transform: "scale(1.07)", offset: .14 },
+        { transform: "scale(1)", offset: .28 },
+        { transform: "scale(1.05)", offset: .42 },
+        { transform: "scale(1)", offset: .7 },
+        { transform: "scale(1)" }
+      ], { duration: 1400, iterations: Infinity, easing: "ease-in-out" });
+      running.push(beat);
+      const glowBeat = glow.animate([{ opacity: .7 }, { opacity: 1, offset: .14 }, { opacity: .6, offset: .7 }, { opacity: .7 }],
+        { duration: 1400, iterations: Infinity });
+      running.push(glowBeat);
+    }, beatAt);
+
+    // 7. button
+    setTimeoutTracked(() => btn.classList.add("show"), beatAt + 300);
+  }
+
+  const timers = [];
+  function setTimeoutTracked(fn, ms) { timers.push(setTimeout(fn, ms)); }
+
+  btn.addEventListener("click", () => {
+    timers.forEach(clearTimeout);
+    timers.length = 0;
+    play();
+  });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(play);
+  } else {
+    play();
+  }
+})();
+</script>
+</body>
+</html>
